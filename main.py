@@ -1,11 +1,20 @@
 import os
+from collections import UserDict
+import oop
 
+
+ADRESS_BOOK = oop.AddressBook()
 bot_working = True
 clear = lambda: os.system('clear')
 
-
-contact_dict = {'Max':121212121,
-                'John':42131221}
+# #for test
+# rec1 = oop.Record(oop.Name('Max'), oop.Phone('12'))
+# rec2 = oop.Record(oop.Name('Matt'), oop.Phone('13'))
+# rec3 = oop.Record(oop.Name('Ann'), oop.Phone('14'))
+# rec1.add_phone('324324234')
+# ADRESS_BOOK.addRecord(rec1)
+# ADRESS_BOOK.addRecord(rec2)
+# ADRESS_BOOK.addRecord(rec3)
 
 
 def input_error(func):
@@ -19,7 +28,7 @@ def input_error(func):
             print('Enter name and phone separated by a space!')
             return func(*args,**kwargs)
         except KeyError:
-            print('This name found!')
+            print('This name not found!')
             return func(*args,**kwargs)
         except IndexError:
             print('This name found! Enter another name.')
@@ -47,31 +56,54 @@ def hello():
     return ('How can I help you?')
 
 
-def add(name, phone):
+@input_error
+def add_record(name, phone):
     clear()
-    contact_dict.update({name: phone})
-    return f"{name} : {phone}"
+    if not name in  ADRESS_BOOK.keys():
+        rec = oop.Record(oop.Name(name),oop.Phone(phone))
+        ADRESS_BOOK.addRecord(rec)
+        return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}\n"
+    else: 
+        return "Name already exist. Try add phone command for add extra phone."
 
 
-def change(name, new_phone):
+def change_phone(name, old_phone, new_phone):
     clear()
-    if name in contact_dict.keys():
-        contact_dict[name] = new_phone
-        return f"{name} : {new_phone}"
-    raise IndexError
+    rec = ADRESS_BOOK.getRecord_byName(name)
+    rec.change_phone(old_phone,new_phone)
+    return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}\n"
+
+
+def add_phone(name, phone):
+    clear()
+    rec = ADRESS_BOOK.getRecord_byName(name)
+    rec.add_phone(phone)
+    return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}"
+
+def delete_phone(name, phone):
+    clear()
+    rec = ADRESS_BOOK.getRecord_byName(name)
+    rec.del_phone(phone)
+    return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}\n"
 
 
 def showall():
     clear()
     res = ''
-    for name, phone in contact_dict.items():
-        res += f"{name} : {phone} \n"
-    return res
+    source = ADRESS_BOOK
+    for key, record in source.items():
+        res += f"{key} : {[ phone.value for phone in record.phones]}\n"
+    if res:
+        return res
+    else:
+        return "Address book is empty."
+
 
 
 def phone(name):
     clear()
-    return f"{name} : {contact_dict[name]}"
+    rec = ADRESS_BOOK.getRecord_byName(name)
+    return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}"
 
 
 def command_parse(s):
@@ -88,17 +120,20 @@ def command_parse(s):
 
 
 COMMANDS = {'hello':hello,
-            'add': add,
-            'change':change,
+            'add': add_record,
+            'change':change_phone,
             'phone':phone,
             'show all':showall,
             'good bye':close,
             'exit':close,
             'close':close,
             'help':helper,
+            'add phone': add_phone,
+            'delete phone': delete_phone
             }
 
 
+@input_error
 def get_handler(func):
     return COMMANDS[func]
 
