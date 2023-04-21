@@ -2,13 +2,6 @@ from collections import UserDict
 
 
 class AddressBook(UserDict):
-    def __init__(self):
-        self.data = {}
-
-    def __setitem__(self, key, item):
-        self.data[key] = item
-
-
     def addRecord(self,record):
         self.data[record.name.value] = record
 
@@ -17,18 +10,18 @@ class AddressBook(UserDict):
 
 
 class Field:
-    pass
+    def __init__(self, value):
+        self.value = value
     
 
 class Name(Field):
-    def __init__(self, name) -> None:
-        self.value = name
+    pass
+        
 
 
 
 class Phone(Field):
-    def __init__(self, phone) -> None:
-        self.value = phone
+    pass
 
 
 class Record:
@@ -40,15 +33,15 @@ class Record:
 
 
     def add_phone(self, phone: Phone):
-        self.phones.append(Phone(phone))
+        self.phones.append(phone)
 
 
     def del_phone(self, phone: Phone):
         for n in self.phones:
-            if n.value == phone:
+            if n.value == phone.value:
                 self.phones.remove(n)
 
 
-    def change_phone(self,old_phone, new_phone: Phone):
+    def change_phone(self,old_phone: Phone, new_phone: Phone):
         self.del_phone(old_phone)
         self.add_phone(new_phone)

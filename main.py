@@ -70,20 +70,20 @@ def add_record(name, phone):
 def change_phone(name, old_phone, new_phone):
     clear()
     rec = ADRESS_BOOK.getRecord_byName(name)
-    rec.change_phone(old_phone,new_phone)
+    rec.change_phone(oop.Phone(old_phone),oop.Phone(new_phone))
     return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}\n"
 
 
 def add_phone(name, phone):
     clear()
     rec = ADRESS_BOOK.getRecord_byName(name)
-    rec.add_phone(phone)
+    rec.add_phone(oop.Phone(phone))
     return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}"
 
 def delete_phone(name, phone):
     clear()
     rec = ADRESS_BOOK.getRecord_byName(name)
-    rec.del_phone(phone)
+    rec.del_phone(oop.Phone(phone))
     return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}\n"
 
 
@@ -142,7 +142,9 @@ def get_handler(func):
 def main():
     while bot_working:
         s = input()
-        print(get_handler(command_parse(s)[0])(*command_parse(s)[1]))
+        command = get_handler(command_parse(s)[0])
+        arguments = command_parse(s)[1]
+        print(command(*arguments))
 
 
 
