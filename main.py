@@ -58,7 +58,7 @@ def hello():
 @input_error
 def add_record(name, phone):
     clear()
-    if not name in  ADRESS_BOOK.keys():
+    if name not in ADRESS_BOOK.keys():
         rec = oop.Record(oop.Name(name),oop.Phone(phone))
         ADRESS_BOOK.addRecord(rec)
         return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}\n"
@@ -105,17 +105,22 @@ def phone(name):
     return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}"
 
 
+def unknown_command():
+    return "Unknown command, try again"
+
+
 def command_parse(s):
-    com = s.lower()
-    for key in  COMMANDS.keys():
-        if key in com:
-            command = key
-    com = com.split(command)
-    args = com[1].split(' ')
-    args.remove('')
-    if args:
-        args[0] = args[0].capitalize()
-    return command, args
+    # s = s.lower()
+    for key, cmd in  COMMANDS.items():
+        if key in s.lower():
+            return cmd, s[len(key):].strip().split()
+    # com = com.split(command)
+    # args = com[1].split(' ')
+    # args.remove('')
+    # if args:
+    #     args[0] = args[0].capitalize()
+    # return command, args
+    return unknown_command, []
 
 
 COMMANDS = {'hello':hello,
@@ -132,17 +137,17 @@ COMMANDS = {'hello':hello,
             }
 
 
-@input_error
-def get_handler(func):
-    return COMMANDS[func]
+# @input_error
+# def get_handler(func):
+#     return COMMANDS[func]
 
 
 @input_error
 def main():
     while bot_working:
         s = input()
-        command = get_handler(command_parse(s)[0])
-        arguments = command_parse(s)[1]
+        command, arguments = command_parse(s)
+        # arguments = command_parse(s)[1]
         print(command(*arguments))
 
 
