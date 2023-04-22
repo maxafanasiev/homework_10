@@ -62,22 +62,25 @@ def add_record(name, phone):
         rec = oop.Record(oop.Name(name),oop.Phone(phone))
         ADRESS_BOOK.addRecord(rec)
         return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}\n"
-    else: 
-        return "Name already exist. Try add phone command for add extra phone."
+    return "Name already exist. Try add phone command for add extra phone."
 
 
 def change_phone(name, old_phone, new_phone):
     clear()
     rec = ADRESS_BOOK.getRecord_byName(name)
-    rec.change_phone(oop.Phone(old_phone),oop.Phone(new_phone))
-    return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}\n"
+    if new_phone != old_phone and old_phone in [phone.value for phone in rec.phones] and new_phone not in [phone.value for phone in rec.phones]:
+        rec.change_phone(oop.Phone(old_phone),oop.Phone(new_phone))
+        return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}\n"
+    return "This phone not found, or phone already exist."
 
 
 def add_phone(name, phone):
     clear()
     rec = ADRESS_BOOK.getRecord_byName(name)
-    rec.add_phone(oop.Phone(phone))
-    return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}"
+    if phone not in [ phone.value for phone in rec.phones]:
+        rec.add_phone(oop.Phone(phone))
+        return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}"
+    return "This phone already added."
 
 def delete_phone(name, phone):
     clear()
@@ -110,36 +113,24 @@ def unknown_command():
 
 
 def command_parse(s):
-    # s = s.lower()
     for key, cmd in  COMMANDS.items():
         if key in s.lower():
             return cmd, s[len(key):].strip().split()
-    # com = com.split(command)
-    # args = com[1].split(' ')
-    # args.remove('')
-    # if args:
-    #     args[0] = args[0].capitalize()
-    # return command, args
     return unknown_command, []
 
 
 COMMANDS = {'hello':hello,
-            'add': add_record,
+            'add phone': add_phone,
             'change':change_phone,
-            'phone':phone,
+            'find phone':phone,
             'show all':showall,
             'good bye':close,
             'exit':close,
             'close':close,
+            'delete phone': delete_phone,
+            'add': add_record,
             'help':helper,
-            'add phone': add_phone,
-            'delete phone': delete_phone
             }
-
-
-# @input_error
-# def get_handler(func):
-#     return COMMANDS[func]
 
 
 @input_error
@@ -147,7 +138,8 @@ def main():
     while bot_working:
         s = input()
         command, arguments = command_parse(s)
-        # arguments = command_parse(s)[1]
+        print(command)
+        print(arguments)
         print(command(*arguments))
 
 
