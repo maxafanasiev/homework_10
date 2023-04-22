@@ -138,8 +138,6 @@ def main():
     while bot_working:
         s = input()
         command, arguments = command_parse(s)
-        print(command)
-        print(arguments)
         print(command(*arguments))
 
 
