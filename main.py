@@ -2,7 +2,7 @@ import os
 import oop
 
 
-ADRESS_BOOK = oop.AddressBook()
+adress_book = oop.AddressBook()
 bot_working = True
 clear = lambda: os.system('clear')
 
@@ -11,9 +11,9 @@ clear = lambda: os.system('clear')
 # rec2 = oop.Record(oop.Name('Matt'), oop.Phone('13'))
 # rec3 = oop.Record(oop.Name('Ann'), oop.Phone('14'))
 # rec1.add_phone('324324234')
-# ADRESS_BOOK.addRecord(rec1)
-# ADRESS_BOOK.addRecord(rec2)
-# ADRESS_BOOK.addRecord(rec3)
+# adress_book.addRecord(rec1)
+# adress_book.addRecord(rec2)
+# adress_book.addRecord(rec3)
 
 
 def input_error(func):
@@ -58,33 +58,28 @@ def hello():
 @input_error
 def add_record(name, phone):
     clear()
-    if name not in ADRESS_BOOK.keys():
-        rec = oop.Record(oop.Name(name),oop.Phone(phone))
-        ADRESS_BOOK.addRecord(rec)
-        return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}\n"
-    return "Name already exist. Try add phone command for add extra phone."
+    rec = oop.Record(oop.Name(name),oop.Phone(phone))
+    adress_book.addRecord(rec)
+    return f"{rec.name.value} : {[ phone.value for phone in adress_book[rec.name.value].phones]}\n"
 
 
 def change_phone(name, old_phone, new_phone):
     clear()
-    rec = ADRESS_BOOK.getRecord_byName(name)
-    if new_phone != old_phone and old_phone in [phone.value for phone in rec.phones] and new_phone not in [phone.value for phone in rec.phones]:
-        rec.change_phone(oop.Phone(old_phone),oop.Phone(new_phone))
-        return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}\n"
-    return "This phone not found, or phone already exist."
+    rec = adress_book[name]
+    rec.change_phone(oop.Phone(old_phone),oop.Phone(new_phone))
+    return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}\n"
 
 
 def add_phone(name, phone):
     clear()
-    rec = ADRESS_BOOK.getRecord_byName(name)
-    if phone not in [ phone.value for phone in rec.phones]:
-        rec.add_phone(oop.Phone(phone))
-        return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}"
-    return "This phone already added."
+    rec = adress_book[name]
+    rec.add_phone(oop.Phone(phone))
+    return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}"
+
 
 def delete_phone(name, phone):
     clear()
-    rec = ADRESS_BOOK.getRecord_byName(name)
+    rec = adress_book[name]
     rec.del_phone(oop.Phone(phone))
     return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}\n"
 
@@ -92,19 +87,16 @@ def delete_phone(name, phone):
 def showall():
     clear()
     res = ''
-    source = ADRESS_BOOK
+    source = adress_book
     for key, record in source.items():
         res += f"{key} : {[ phone.value for phone in record.phones]}\n"
-    if res:
-        return res
-    else:
-        return "Address book is empty."
+    return res if res else "Address book is empty."
 
 
 
 def phone(name):
     clear()
-    rec = ADRESS_BOOK.getRecord_byName(name)
+    rec = adress_book[name]
     return f"{rec.name.value} : {[ phone.value for phone in rec.phones]}"
 
 

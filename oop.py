@@ -3,10 +3,10 @@ from collections import UserDict
 
 class AddressBook(UserDict):
     def addRecord(self,record):
-        self.data[record.name.value] = record
-
-    def getRecord_byName(self,name):
-        return self.data[name]
+        if record.name.value not in self.keys():
+            self.data[record.name.value] = record
+        else:
+            print("Name already exist. Try add phone command for add extra phone.")
 
 
 class Field:
@@ -33,7 +33,10 @@ class Record:
 
 
     def add_phone(self, phone: Phone):
-        self.phones.append(phone)
+        if phone.value not in [phone.value for phone in self.phones]:
+            self.phones.append(phone)
+        else:
+            print("This phone already added.")
 
 
     def del_phone(self, phone: Phone):
@@ -43,5 +46,11 @@ class Record:
 
 
     def change_phone(self,old_phone: Phone, new_phone: Phone):
-        self.del_phone(old_phone)
-        self.add_phone(new_phone)
+        if old_phone.value == new_phone.value or new_phone.value in [phone.value for phone in self.phones]:
+            print("This phone alredy exist!")
+        elif old_phone.value not in [phone.value for phone in self.phones]:
+            print("This phone not found!")
+        else:
+            self.del_phone(old_phone)
+            self.add_phone(new_phone)
+            print("Phone changed.")
